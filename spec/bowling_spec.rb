@@ -46,8 +46,11 @@ describe Bowling do
 			
 			@dsl = mock(Bowling::DSL)
 			@interpreter = Bowling::Interpreter.new(@dsl, "3 4 5")
+			@dsl.stub(:proc_from).with('3').and_return(Proc.new { 'a result!'} )
 			
-			@interpreter.next_to_execute.should == '3'
+			@interpreter.execute_next
+
+			@interpreter.answer.should == ['4', '5']
 
 		end
 
@@ -95,25 +98,38 @@ describe Bowling do
 			@interpreter.var_stack.should == ['three']
 
 		end
-		it "...blapgh" do	
+
+		it "will consume parameters to fulfill parameter requiring proc if available" do	
 			@dsl = mock(Bowling::DSL)
+			@dsl.stub(:proc_from).with('2').and_return(Proc.new {'two'} )
 			@dsl.stub(:proc_from).with('3').and_return(Proc.new {'three'} )
 			@dsl.stub(:proc_from).with('4').and_return(Proc.new {'four'} )
 			@dsl.stub(:proc_from).with('5').and_return(Proc.new { |param1, param2|
-																															"asdf" + param1.to_s + " .."#+ " plus " + param2
+																														 param1 + " plus " + param2
 																														}
 																									)
 
-			@interpreter = Bowling::Interpreter.new(@dsl, "3 4 5 6")
+			@interpreter = Bowling::Interpreter.new(@dsl, "2 3 4 5 6")
 			
 			@interpreter.execute_next
+			@interpreter.var_stack.should == ['two']
+
 			@interpreter.execute_next
-			@interpreter.execute_next
+			@interpreter.var_stack.should == ['two', 'three']
 			
+			@interpreter.execute_next
+			@interpreter.var_stack.should == ['two', 'three', 'four']
+			
+			@interpreter.execute_next
 			@interpreter.answer.should == ['6']
-			@interpreter.var_stack.should == ['three plus four']
+			@interpreter.var_stack.should == ['two', 'three plus four']
 
 		end
+
+		it "" do
+			
+		end
+
 
 	end
 

@@ -46,10 +46,6 @@ module Bowling
 			@var_stack = []
 		end
 		
-		def next_to_execute
-			@answer.first
-		end
-
 		def execute_next
 			proc_to_execute = @dsl.proc_from(@answer.shift)
 			
@@ -57,10 +53,10 @@ module Bowling
 				#@var_stack.push proc_to_execute.call
 				param_size = proc_to_execute.parameters.length
 				params = []
-				params.size.times do
+				param_size.times do
 					params.unshift(@var_stack.pop)
 				end
-				@var_stack.push proc_to_execute.call(params[0])
+				@var_stack.push proc_to_execute.call(*params)
 			end
 		end
 
