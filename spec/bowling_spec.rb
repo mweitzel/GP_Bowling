@@ -35,7 +35,6 @@ describe Bowling do
 
 			@interpreter = Bowling::Interpreter.new(my_dsl, "X / peek_front 4")
 			@interpreter.var_stack.should == []
-			@interpreter.exec_stack.should == []
 			@interpreter.dsl.should == my_dsl
 			@interpreter.answer.length.should == 4
 			
@@ -139,7 +138,7 @@ describe Bowling do
 			@interpreter = Bowling::Interpreter.new(@dsl, "2 3 4 5 5")
 			@interpreter.run_answer
 			@interpreter.answer.should == []
-			@interpreter.var_stack.should == ['two', 'three plus four', 'two']
+			@interpreter.var_stack.should == ['two plus three plus four']
 		end
 
 
