@@ -18,8 +18,12 @@ module Bowling
 											'8'=>{},
 											'9'=>{},
 											'0'=>{},
-											'if'=>{:proc => Proc.new {|value|
-																								(value != "-1" && value != "0")	
+											'if'=>{:proc => Proc.new {|bool, value|
+																									if (bool.to_i > 0 || bool == 'X' || bool == '/')
+																										value
+																									else
+																										nil
+																									end
 																								}
 															},
 											'if_eq'=>{:proc => Proc.new {|p, q|
@@ -44,11 +48,8 @@ module Bowling
 		end
 		
 		def proc_from(key)
-			if(['/','X','-1','0','1','2','3','4','5','6','7','8','9'].include?(key))
-				return Proc.new {key}
-			end
 
-			@primatives[key][:proc] || Proc.new {}
+			@primatives[key][:proc] || Proc.new {key}
 				
 		end
 	end	

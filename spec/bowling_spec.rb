@@ -43,13 +43,13 @@ describe Bowling do
 			end
 		end
 		
-		it "'if' returns false for 0 and negative 1 ...and true for everthing else" do
-			@dsl.proc_from('if').call("-1").should == false
-			@dsl.proc_from('if').call("0").should == false
-			@dsl.proc_from('if').call("1").should == true 
-			@dsl.proc_from('if').call("X").should == true 
-			@dsl.proc_from('if').call("/").should == true 
-			@dsl.proc_from('if').call("9").should == true 
+		it "'if' returns nil for number less than 0 and passed value for everthing else" do
+			@dsl.proc_from('if').call('-1', 'value').should == nil
+			@dsl.proc_from('if').call("0", 'value' ).should == nil
+			@dsl.proc_from('if').call("1", 'value' ).should == 'value' 
+			@dsl.proc_from('if').call("X", 'value' ).should == 'value'  
+			@dsl.proc_from('if').call("/", 'value' ).should == 'value' 
+			@dsl.proc_from('if').call("9", 'value' ).should == 'value' 
 		end
 		
 		it "'if_eq' compares string value of each parameter" do
@@ -62,8 +62,9 @@ describe Bowling do
 			if_eq.call('3', "3").should == true
 		end
 
-		it "" do
-			
+		it "if is broken... if needs to eject the crap when it doesnt pass the conditionall.. glah." do
+			false.should be_true
+			#jk, things might work if i pass a current stack value and return nil if false
 		end
 	
 	end
