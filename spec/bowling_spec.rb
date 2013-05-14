@@ -25,6 +25,47 @@ describe Bowling do
 			@dsl.primatives.keys.should include('1')
 		end
 
+		it "returns proc when asked for referencing each primitive by its token" do
+			@dsl.primatives.keys.each do |key|
+				@dsl.proc_from(key).instance_of?(Proc).should be_true
+			end
+		end
+
+		it "proc from numbers return number when called" do
+			for i in -1..9 do
+				@dsl.proc_from(i.to_s).call.should == i.to_s
+			end
+		end
+
+		it "stuff does shit you expect" do
+			['/', 'X'].each do |i|
+				@dsl.proc_from(i.to_s).call.should == i
+			end
+		end
+		
+		it "'if' returns false for 0 and negative 1 ...and true for everthing else" do
+			@dsl.proc_from('if').call("-1").should == false
+			@dsl.proc_from('if').call("0").should == false
+			@dsl.proc_from('if').call("1").should == true 
+			@dsl.proc_from('if').call("X").should == true 
+			@dsl.proc_from('if').call("/").should == true 
+			@dsl.proc_from('if').call("9").should == true 
+		end
+		
+		it "'if_eq' compares string value of each parameter" do
+			if_eq = @dsl.proc_from('if_eq')
+			if_eq.call('X', 'X').should == true
+			if_eq.call('X', "/").should == false
+			if_eq.call('/', "/").should == true
+			if_eq.call('X', "10").should == false
+			if_eq.call('3', "10").should == false
+			if_eq.call('3', "3").should == true
+		end
+
+		it "" do
+			
+		end
+	
 	end
 
 	context "Interpreter" do
@@ -141,6 +182,16 @@ describe Bowling do
 			@interpreter.var_stack.should == ['two plus three plus four']
 		end
 
+		it "does not add return value of the Proc's call if it is nil" do
+			@dsl = mock(Bowling::DSL)
+			@dsl.stub(:proc_from).with('2').and_return(Proc.new {'two'} )
+			@dsl.stub(:proc_from).with('gimme_nil').and_return(Proc.new {nil})
+
+			@interpreter = Bowling::Interpreter.new(@dsl, "2 gimme_nil 2")
+			@interpreter.run_answer
+			@interpreter.answer.should == []
+			@interpreter.var_stack.should == ['two', 'two']
+		end
 
 	end
 

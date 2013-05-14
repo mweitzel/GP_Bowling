@@ -18,8 +18,14 @@ module Bowling
 											'8'=>{},
 											'9'=>{},
 											'0'=>{},
-											'if'=>{},
-											'if_eq'=>{},
+											'if'=>{:proc => Proc.new {|value|
+																								(value != "-1" && value != "0")	
+																								}
+															},
+											'if_eq'=>{:proc => Proc.new {|p, q|
+																											(p.to_s == q.to_s)
+																										}
+																},
 											'if_greater'=>{},
 											'if_less'=>{},
 											'and'=>{},
@@ -36,7 +42,16 @@ module Bowling
 		def primatives
 			@primatives
 		end
-	end
+		
+		def proc_from(key)
+			if(['/','X','-1','0','1','2','3','4','5','6','7','8','9'].include?(key))
+				return Proc.new {key}
+			end
+
+			@primatives[key][:proc] || Proc.new {}
+				
+		end
+	end	
 
 	class Interpreter
 		
@@ -56,13 +71,13 @@ module Bowling
 			proc_to_execute = @dsl.proc_from(@answer.shift)
 			
 			if proc_to_execute.parameters.length <= @var_stack.length
-				#@var_stack.push proc_to_execute.call
-				param_size = proc_to_execute.parameters.length
 				params = []
-				param_size.times do
+				proc_to_execute.parameters.length.times do
 					params.unshift(@var_stack.pop)
 				end
-				@var_stack.push proc_to_execute.call(*params)
+				if(new_param = proc_to_execute.call(*params))
+					@var_stack.push new_param
+				end
 			end
 		end
 
