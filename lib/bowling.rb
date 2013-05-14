@@ -42,7 +42,7 @@ module Bowling
 		
 		def initialize(dsl, answer)
 			@dsl = dsl
-			@answer = answer.split(" ")
+			@answer_stack = answer.split(" ")
 			@var_stack = []
 		end
 		
@@ -50,7 +50,6 @@ module Bowling
 			proc_to_execute = @dsl.proc_from(@answer.shift)
 			
 			if proc_to_execute.parameters.length <= @var_stack.length
-				#@var_stack.push proc_to_execute.call
 				param_size = proc_to_execute.parameters.length
 				params = []
 				param_size.times do
@@ -64,17 +63,13 @@ module Bowling
 			@dsl
 		end
 
-		def answer
-			@answer
+		def answer_stack
+			@answer_stack
 		end
 
 		def var_stack
 			@var_stack
 		end
 
-		def exec_stack
-			[]
-		end
-		
 	end
 end

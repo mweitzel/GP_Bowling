@@ -126,8 +126,20 @@ describe Bowling do
 
 		end
 
-		it "" do
+		it "will run whole answer if asked to" do
+			@dsl = mock(Bowling::DSL)
+			@dsl.stub(:proc_from).with('2').and_return(Proc.new {'two'} )
+			@dsl.stub(:proc_from).with('3').and_return(Proc.new {'three'} )
+			@dsl.stub(:proc_from).with('4').and_return(Proc.new {'four'} )
+			@dsl.stub(:proc_from).with('5').and_return(Proc.new { |param1, param2|
+																														 param1 + " plus " + param2
+																														}
+																									)
 			
+			@interpreter = Bowling::Interpreter.new(@dsl, "2 3 4 5 5")
+			@interpreter.run_answer
+			@interpreter.answer.should == []
+			@interpreter.var_stack.should == ['two', 'three plus four', 'two']
 		end
 
 
