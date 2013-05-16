@@ -105,7 +105,11 @@ describe Bowling do
 		it "swaps top two elements" do
 			@dsl.proc_from('swap').call("left", "right").should == ['right','left']
 		end
-		
+	
+		pending "perhaps include some loop"
+		pending "perhaps include a way to reference either vars or executable tokens"
+		pending "perhaps include a way to return either vars or executable tokens"
+
 		context "can access the entirety of input" do
 			
 			before(:each) do
