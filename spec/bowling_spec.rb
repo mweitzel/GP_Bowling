@@ -111,7 +111,9 @@ describe Bowling do
 			before(:each) do
 				@params = [1,2,3,4,5]
 			end
-
+			
+			pending "confirms arity is zero even though they access a param"
+			
 			it "pop" do
 				@dsl.proc_from('pop').call(@params).should == 5
 				@params.should == [1,2,3,4]
@@ -292,15 +294,20 @@ describe Bowling do
 	end
 
 	context "Creator" do
-
+		pending "random shiiiits ferom the dsl need to get hoppinin"
 	end
 
 	context "Evaluator" do
-
+		pending "get some daannnng scooooooooorrreeesss!!!!!!"
 	end
 
 	context "Picker" do
-
+		pending "don't get too many of the same answer"
+		pending "get good answers, whatever that means.."
 	end
 
+	context "Main loop? do i even want that? what the deuce runs this ship" do
+		pending "uhh..." 
+	end
+	
 end
