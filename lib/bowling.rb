@@ -61,6 +61,10 @@ module Bowling
 											'eject'=>{},
 											'peek_front'=>{},
 											'peek_back'=>{},
+											'swap'=>{:proc => Proc.new { |x, y|
+																										[y,x]
+																									}
+															},
 											'add'=>{:proc => Proc.new { |x, y|
 																										x = resolve_as_number(x)
 																										y = resolve_as_number(y)
@@ -135,9 +139,9 @@ module Bowling
 				proc_to_execute.parameters.length.times do
 					params.unshift(@var_stack.pop)
 				end
-				if(new_param = proc_to_execute.call(*params))
-					@var_stack.push new_param
-				end
+				@var_stack.push(proc_to_execute.call(*params))
+				@var_stack.flatten!
+				@var_stack.compact!
 			end
 		end
 

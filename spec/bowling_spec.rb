@@ -101,8 +101,31 @@ describe Bowling do
 				divide.call("4", "0").should == nil
 			end
 		end
+		
+		it "swaps top two elements" do
+			@dsl.proc_from('swap').call("left", "right").should == ['right','left']
+		end
+		
+		context "can access the entirety of input" do
+		
+			pending "pop" do
 
+			end
 
+			pending "eject" do
+
+			end
+
+			pending "peek_front" do
+
+			end
+
+			pending "peek_back" do
+
+			end
+
+		end
+		
 	end
 
 	context "Interpreter" do
@@ -229,7 +252,18 @@ describe Bowling do
 			@interpreter.answer.should == []
 			@interpreter.var_stack.should == ['two', 'two']
 		end
+		
+		it "will add multiple items if the returned value is an array" do
+			@dsl = mock(Bowling::DSL)
+			@dsl.stub(:proc_from).with('2').and_return(Proc.new {'two'} )
+			@dsl.stub(:proc_from).with('return_array').and_return(Proc.new {['hi', 'there']})
 
+			@interpreter = Bowling::Interpreter.new(@dsl, "2 return_array 2")
+			@interpreter.run_answer
+			@interpreter.answer.should == []
+			@interpreter.var_stack.should == ['two', 'hi', 'there', 'two']
+		end
+	
 	end
 
 	context "Creator" do
