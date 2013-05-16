@@ -44,29 +44,64 @@ describe Bowling do
 		end
 		
 		it "'if' returns nil for number less than 0 and passed value for everthing else" do
-			@dsl.proc_from('if').call('-1', 'value').should == nil
-			@dsl.proc_from('if').call("0", 'value' ).should == nil
-			@dsl.proc_from('if').call("1", 'value' ).should == 'value' 
-			@dsl.proc_from('if').call("X", 'value' ).should == 'value'  
-			@dsl.proc_from('if').call("/", 'value' ).should == 'value' 
-			@dsl.proc_from('if').call("9", 'value' ).should == 'value' 
+			my_if = @dsl.proc_from('if')
+			my_if.call('-1', 'value').should == nil
+			my_if.call("0", 'value' ).should == nil
+			my_if.call("1", 'value' ).should == 'value' 
+			my_if.call("X", 'value' ).should == 'value'  
+			my_if.call("/", 'value' ).should == 'value' 
+			my_if.call("9", 'value' ).should == 'value' 
 		end
 		
-		it "'if_eq' compares string value of each parameter" do
-			if_eq = @dsl.proc_from('if_eq')
-			if_eq.call('X', 'X').should == true
-			if_eq.call('X', "/").should == false
-			if_eq.call('/', "/").should == true
-			if_eq.call('X', "10").should == false
-			if_eq.call('3', "10").should == false
-			if_eq.call('3', "3").should == true
+		it "'eq' compares string value of each parameter" do
+			eq = @dsl.proc_from('eq')
+			eq.call('X', 'X').should == 1
+			eq.call('X', "/").should == 0
+			eq.call('/', "/").should == 1
+			eq.call('X', "10").should == 0
+			eq.call('3', "10").should == 0
+			eq.call('3', "3").should == 1
 		end
 
-		it "if is broken... if needs to eject the crap when it doesnt pass the conditionall.. glah." do
-			false.should be_true
-			#jk, things might work if i pass a current stack value and return nil if false
+		it "'greater' compared numerically, with X as 10.8, and / as 10.2" do
+			greater = @dsl.proc_from('greater')
+			greater.call('9', '7').should == 1
+			greater.call('7', '9').should == 0
+			greater.call('X', '10').should == 1
+			greater.call('/', '10').should == 1
+			greater.call('X', '/').should == 1
+			greater.call('X', '11').should == 0
+			greater.call('5', '5').should == 0
 		end
-	
+
+		context "when 'math'ing X and / resolve to 10 ..." do
+			it "adding works as expected" do
+				add = @dsl.proc_from('add')
+				add.call("5", "X").should == 15
+				add.call("/", "X").should == 20
+				add.call("-3", "7").should == 4
+			end
+			it "subtracting works as expected" do
+				subtract= @dsl.proc_from('subtract')
+				subtract.call("5", "X").should == -5
+				subtract.call("/", "X").should == 0
+				subtract.call("-3", "7").should == -10
+			end
+			it "multiplying works as expected" do
+				multiply = @dsl.proc_from('multiply')
+				multiply.call("5", "X").should == 50
+				multiply.call("/", "X").should == 100
+				multiply.call("-3", "7").should == -21
+			end
+			it "dividing works as expected, erros to nil" do
+				divide = @dsl.proc_from('divide')
+				divide.call("5", "X").should == 0.5
+				divide.call("/", "X").should == 1
+				divide.call("-14", "7").should == -2
+				divide.call("4", "0").should == nil
+			end
+		end
+
 	end
 
 	context "Interpreter" do

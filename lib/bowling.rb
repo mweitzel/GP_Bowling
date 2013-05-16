@@ -26,11 +26,33 @@ module Bowling
 																									end
 																								}
 															},
-											'if_eq'=>{:proc => Proc.new {|p, q|
-																											(p.to_s == q.to_s)
+											'eq'=>{:proc => Proc.new {|p, q|
+																											if(p.to_s == q.to_s)
+																												1
+																											else
+																												0
+																											end
 																										}
 																},
-											'if_greater'=>{},
+											'greater'=>{:proc => Proc.new {|p, q|
+																													if(p.to_s == 'X')
+																															p = 10.8
+																													elsif(p.to_s == '/')
+																															p = 10.2
+																													end
+																													if(q.to_s == 'X')
+																															q = 10.8
+																													elsif(q.to_s == '/')
+																															q = 10.2
+																													end
+
+																													if(p.to_f > q.to_f)
+																														1
+																													else
+																														0
+																													end
+																												}
+																			},
 											'if_less'=>{},
 											'and'=>{},
 											'or'=>{},
@@ -39,8 +61,43 @@ module Bowling
 											'eject'=>{},
 											'peek_front'=>{},
 											'peek_back'=>{},
-											'add/sub/mult/div'=>{}
+											'add'=>{:proc => Proc.new { |x, y|
+																										x = resolve_as_number(x)
+																										y = resolve_as_number(y)
+																										x + y
+																									}
+															},
+											'subtract'=>{:proc => Proc.new { |x, y|
+																										x = resolve_as_number(x)
+																										y = resolve_as_number(y)
+																										x - y
+																									}
+															},
+											'multiply'=>{:proc => Proc.new { |x, y|
+																										x = resolve_as_number(x)
+																										y = resolve_as_number(y)
+																										x * y
+																									}
+															},
+											'divide'=>{:proc => Proc.new { |x, y|
+																										x = resolve_as_number(x)
+																										y = resolve_as_number(y)
+																										if(y == 0)
+																											nil
+																										else
+																											a = x / y
+																										end
+																									}
+															},
 										}
+		end
+		
+		def resolve_as_number(key)
+			if(key.to_s == "X" || key.to_s == '/')
+				return 10
+			else
+				return key.to_f
+			end
 		end
 
 		def primatives
@@ -52,6 +109,8 @@ module Bowling
 			@primatives[key][:proc] || Proc.new {key}
 				
 		end
+
+		private :resolve_as_number
 	end	
 
 	class Interpreter
