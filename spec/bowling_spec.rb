@@ -107,21 +107,29 @@ describe Bowling do
 		end
 		
 		context "can access the entirety of input" do
-		
-			pending "pop" do
-
+			
+			before(:each) do
+				@params = [1,2,3,4,5]
 			end
 
-			pending "eject" do
-
+			it "pop" do
+				@dsl.proc_from('pop').call(@params).should == 5
+				@params.should == [1,2,3,4]
 			end
 
-			pending "peek_front" do
-
+			it "eject" do
+				@dsl.proc_from('eject').call(@params).should == 1
+				@params.should == [2,3,4,5]
 			end
 
-			pending "peek_back" do
+			it "peek_front" do
+				@dsl.proc_from('peek_front').call(@params).should == 1
+				@params.should == [1,2,3,4,5]
+			end
 
+			it "peek_back" do
+				@dsl.proc_from('peek_back').call(@params).should == 5
+				@params.should == [1,2,3,4,5]
 			end
 
 		end
@@ -141,6 +149,11 @@ describe Bowling do
 			
 		end
 
+		it "can be instanciated with optional parameter array" do
+			my_dsl = "I am a stub for an object"
+			parameters = ["hello..", "oh, hi"]
+			@interpreter = Bowling::Interpreter.new(my_dsl, "X / peek_front 4",parameters)
+		end
 
 		it "executes answer from left to right" do
 			
@@ -149,7 +162,6 @@ describe Bowling do
 			@dsl.stub(:proc_from).with('3').and_return(Proc.new { 'a result!'} )
 			
 			@interpreter.execute_next
-
 			@interpreter.answer.should == ['4', '5']
 
 		end
@@ -264,6 +276,19 @@ describe Bowling do
 			@interpreter.var_stack.should == ['two', 'hi', 'there', 'two']
 		end
 	
+		it "passes the parameters object as an additional parameter when it has 0 arity" do
+			@dsl = mock(Bowling::DSL)
+			@dsl.stub(:proc_from).with('2').and_return(Proc.new {'two'} )
+			@dsl.stub(:proc_from).with('return_param_values').and_return(Proc.new {|opt = []|
+																																							opt
+																																						})
+
+			parameters = ["multiple", "items"]
+			@interpreter = Bowling::Interpreter.new(@dsl, "2 return_param_values", parameters)
+			@interpreter.run_answer
+			@interpreter.var_stack.should == ["two", "multiple", "items"]
+		end
+
 	end
 
 	context "Creator" do

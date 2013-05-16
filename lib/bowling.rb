@@ -57,10 +57,22 @@ module Bowling
 											'and'=>{},
 											'or'=>{},
 											'not'=>{},
-											'pop'=>{},
-											'eject'=>{},
-											'peek_front'=>{},
-											'peek_back'=>{},
+											'pop'=>{:proc => Proc.new {|params = []|
+																									params.pop	
+																								}
+														},
+											'eject'=>{:proc => Proc.new {|params = []|
+																									params.shift	
+																								}
+														},
+											'peek_front'=>{:proc => Proc.new {|params = []|
+																									params.first
+																								}
+														},
+											'peek_back'=>{:proc => Proc.new {|params = []|
+																									params.last
+																								}
+														},
 											'swap'=>{:proc => Proc.new { |x, y|
 																										[y,x]
 																									}
@@ -119,9 +131,10 @@ module Bowling
 
 	class Interpreter
 		
-		def initialize(dsl, answer)
+		def initialize(dsl, answer, params = [])
 			@dsl = dsl
 			@answer = answer.split(" ")
+			@parameters = params
 			@var_stack = []
 		end
 		
@@ -134,12 +147,12 @@ module Bowling
 		def execute_next
 			proc_to_execute = @dsl.proc_from(@answer.shift)
 			
-			if proc_to_execute.parameters.length <= @var_stack.length
+			if proc_to_execute.arity.abs <= @var_stack.length
 				params = []
-				proc_to_execute.parameters.length.times do
+				proc_to_execute.arity.abs.times do
 					params.unshift(@var_stack.pop)
 				end
-				@var_stack.push(proc_to_execute.call(*params))
+				@var_stack.push(proc_to_execute.call(*params, @parameters))
 				@var_stack.flatten!
 				@var_stack.compact!
 			end
