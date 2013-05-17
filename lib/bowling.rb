@@ -35,22 +35,17 @@ module Bowling
 																										}
 																},
 											'greater'=>{:proc => Proc.new {|p, q|
-																													if(p.to_s == 'X')
+																													if(p == 'X')
 																															p = 10.8
-																													elsif(p.to_s == '/')
+																													elsif(p == '/')
 																															p = 10.2
 																													end
-																													if(q.to_s == 'X')
+																													if(q == 'X')
 																															q = 10.8
-																													elsif(q.to_s == '/')
+																													elsif(q == '/')
 																															q = 10.2
 																													end
-
-																													if(p.to_f > q.to_f)
-																														1
-																													else
-																														0
-																													end
+																													(p.to_f > q.to_f) ? 1 : 0
 																												}
 																			},
 											'if_less'=>{},
@@ -121,9 +116,10 @@ module Bowling
 		end
 		
 		def proc_from(key)
-
-			@primatives[key][:proc] || Proc.new {key}
-				
+			
+			@primatives.include?(key) ?
+				(@primatives[key][:proc] || Proc.new {key}) :
+				Proc.new {}
 		end
 
 		private :resolve_as_number
@@ -142,6 +138,7 @@ module Bowling
 			while(@answer.length > 0) do
 				execute_next
 			end
+			@var_stack.last.to_i
 		end
 
 		def execute_next
