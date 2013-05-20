@@ -15,13 +15,15 @@ module Clustering
 		end
 
 		def format_for_input (object_array)
-			string_for_input = ""
 			keys = object_array.first.keys
+			string_for_input = keys.to_a.join(',') + "\n"
+
 			object_array.each do |answer_criteria|
+				row = []
 				keys.each do |key|
-					string_for_input += answer_criteria[key].to_s + ","
+					row.push(answer_criteria[key])
 				end
-				string_for_input += "\n"
+				string_for_input += row.join(',') + "\n"
 			end
 			string_for_input
 		end

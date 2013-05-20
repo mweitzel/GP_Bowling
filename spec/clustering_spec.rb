@@ -27,7 +27,7 @@ describe Clustering do
 		data.push({"criteria_a" => 1, "criteria_b" => 2, "criteria_c" => 3})
 		data.push({"criteria_a" => 4, "criteria_b" => 5, "criteria_c" => 6})
 		data.push({"criteria_a" => 7, "criteria_b" => 8, "criteria_c" => 9})
-		expected ="index,criteria_a,criteria_b,criteria_c,\n0,1,2,3,\n1,4,5,6,\n2,7,8,9,\n"
+		expected ="criteria_a,criteria_b,criteria_c\n1,2,3\n4,5,6\n7,8,9\n"
 		@r_talker.format_for_input(data).should == expected
 	end
 
