@@ -73,6 +73,11 @@ describe Clustering do
 		@r_talker.data_with_clusters(data, clusters).should == expected_compiled_data
 	end
 	
+	it "should be able to string together an R script" do
+		@r_talker.bash_string("cluster").should == "Rscript lib/cluster_data.r temp/input.csv temp/output.csv"
+		@r_talker.bash_string("cluster_png").should == "Rscript lib/cluster_data.r temp/input.csv temp/output.csv temp/plot.png"
+	end
+
 	it "should be able to start with input data, and end up with cluster information for it" do
 		data = []
 		data.push({"criteria_a" => 1, "criteria_b" => 2, "criteria_c" => 3})
@@ -81,7 +86,7 @@ describe Clustering do
 		
 		expected_compiled_data = []
 		expected_compiled_data.push({"criteria_a" => 1, "criteria_b" => 2, "criteria_c" => 3, "cluster" => 1})
-		expected_compiled_data.push({"criteria_a" => 4, "criteria_b" => 5, "criteria_c" => 6, "cluster" => 3})
+		expected_compiled_data.push({"criteria_a" => 4, "criteria_b" => 5, "criteria_c" => 6, "cluster" => 2})
 		expected_compiled_data.push({"criteria_a" => 7, "criteria_b" => 8, "criteria_c" => 9, "cluster" => 2})
 
 		@r_talker.data_with_clusters_from(data).should == expected_compiled_data

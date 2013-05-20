@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<script src="http://rightjs.org/hotlink/right.js"></script>
+	</head>
+	<body>
+		<img src="../temp/plot.png" id="myImg">
+		</img>
+		<script>
+			a = document.getElementById("myImg").src
+			setInterval(function(){document.getElementById("myImg").src = a + "?" + new Date().getTime()}, 500)
+		</script>
+	<body>
+</html>

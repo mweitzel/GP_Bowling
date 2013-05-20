@@ -11,9 +11,20 @@ module Clustering
 		def data_with_clusters_from(data)
 			input_string = format_for_input(data)
 			write_input_as_file(input_string)
-
+			`#{bash_string("cluster_png")}`
+			clusters = clusters_from_r_output
+			data_with_clusters(data, clusters)
 		end
 
+		def bash_string(which_call)
+			case which_call
+			when "cluster"
+				"Rscript lib/cluster_data.r #{@input_file_name} #{@output_file_name}"
+			when "cluster_png"
+				"Rscript lib/cluster_data.r #{@input_file_name} #{@output_file_name} temp/plot.png"
+			end
+		end
+		
 		def format_for_input (object_array)
 			keys = object_array.first.keys
 			string_for_input = keys.to_a.join(',') + "\n"
